@@ -62,7 +62,11 @@ class Ui_winSignUp(object):
         self.lbError.setText("")
         self.lbError.setObjectName("lbError")
         self.btnHaveAccount = QtWidgets.QPushButton(self.centralwidget)
-        self.btnHaveAccount.setGeometry(QtCore.QRect(30, 220, 121, 23))
+        self.btnHaveAccount.setGeometry(QtCore.QRect(41, 216, 111, 16))
+        self.btnHaveAccount.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btnHaveAccount.setStyleSheet("color: blue;\n"
+"border: none;\n"
+"background-color: rgba(0,0,0,0)")
         self.btnHaveAccount.setObjectName("btnHaveAccount")
         winSignUp.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(winSignUp)
@@ -129,7 +133,11 @@ class Ui_winLogin(object):
         self.btnLogin.setObjectName("btnLogin")
         self.verticalLayout.addWidget(self.btnLogin)
         self.btnNoAccount = QtWidgets.QPushButton(self.centralwidget)
-        self.btnNoAccount.setGeometry(QtCore.QRect(40, 200, 121, 23))
+        self.btnNoAccount.setGeometry(QtCore.QRect(46, 190, 101, 16))
+        self.btnNoAccount.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btnNoAccount.setStyleSheet("color: blue;\n"
+"border: none;\n"
+"background-color: rgba(0,0,0,0)")
         self.btnNoAccount.setObjectName("btnNoAccount")
         self.lbError = QtWidgets.QLabel(self.centralwidget)
         self.lbError.setGeometry(QtCore.QRect(10, 30, 181, 20))
