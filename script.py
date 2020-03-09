@@ -1,12 +1,17 @@
-import gspread
+import mysql.connector
 import regex as re
-from oauth2client.service_account import ServiceAccountCredentials
 
-scope = ['https://www.googleapis.com/auth/drive']
-creds = ServiceAccountCredentials.from_json_keyfile_name('creds.json', scope)
-client = gspread.authorize(creds)
-
-sheet = client.open('Accounts').sheet1
+db = mysql.connector.connect(
+    host='localhost',
+    port='3307',
+    user="root",
+    passwd="usbw",
+    database="loginsystem",
+    auth_plugin='mysql_native_password'
+) 
+mycursor = db.cursor()
+mycursor.execute('CREATE DATABASE IF NOT EXISTS loginsystem')
+mycursor.execute('CREATE TABLE IF NOT EXISTS users (email VARCHAR(255), username VARCHAR(255), passwd VARCHAR(255))')
 
 regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
 
@@ -19,17 +24,16 @@ def submit(self):
 
     if '' not in infos:
         if re.search(regex, email):
-            i = 1
-            while sheet.row_values(i):
-                if email == sheet.row_values(i)[0]:
-                    error(self, 'This email is already registered')
-                    return
-                i+=1
-            else:
-                error(self, '')
-                sheet.update_cell(i, 1, email)
-                sheet.update_cell(i, 2, user)
-                sheet.update_cell(i, 3, passwd)
+            mycursor.execute('SELECT email FROM users')
+            if (email,) not in mycursor.fetchall():
+                error(self, 'You signed up')
+                sql = 'INSERT INTO users (email, username, passwd) VALUES(%s, %s, %s)'
+                val = (email, user, passwd)
+                mycursor.execute(sql, val)
+                db.commit()
+            else: 
+                error(self, 'This email is already registered')
+                return
         else:
             error(self, 'Invalid email')
     else:
@@ -43,12 +47,13 @@ def login(self):
 
     if '' not in infos:
         if re.search(regex, email):
-            if email in sheet.col_values(1):
-                ind = sheet.col_values(1).index(email)+1
-                if passwd == sheet.row_values(ind)[2]:
+            mycursor.execute('SELECT email FROM users')
+            if (email,) in mycursor.fetchall():
+                mycursor.execute('SELECT passwd FROM users WHERE email = %s', (email,))
+                if (passwd,) == mycursor.fetchone():
                     error(self, 'Access granted')
-                else:
-                    error(self, 'Wrong password')
+                else: 
+                    error(self, 'Access denied')
             else:
                 error(self, 'This email is not registered')          
         else:
@@ -56,14 +61,3 @@ def login(self):
 
 def error(self, message):
     self.lbError.setText(message)
-
-
-if __name__ == '__main__':
-    data = sheet.get_all_records()
-
-    row = sheet.row_values(1)
-    col = sheet.col_values(1)
-    if 'Email' in col:
-        col = col.index('Email')
-
-    print(col)
