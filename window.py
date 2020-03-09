@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'layout.ui'
+# Form implementation generated from reading ui file 'window.ui'
 #
 # Created by: PyQt5 UI code generator 5.13.2
 #
@@ -166,7 +166,7 @@ class Ui_winLogin(object):
         self.lbEmail.setText(_translate("winLogin", "Email"))
         self.lbPasswd.setText(_translate("winLogin", "Password"))
         self.btnLogin.setText(_translate("winLogin", "Log in"))
-        self.btnNoAccount.setText(_translate("winLogin", "Don\'t have account"))
+        self.btnNoAccount.setText(_translate("winLogin", "Don't have account"))
 
 if __name__ == "__main__":
     import sys
