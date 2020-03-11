@@ -26,18 +26,18 @@ def submit(self):
         if re.search(regex, email):
             mycursor.execute('SELECT email FROM users')
             if (email,) not in mycursor.fetchall():
-                error(self, 'You signed up')
+                error(self, 'You signed up', 1)
                 sql = 'INSERT INTO users (email, username, passwd) VALUES(%s, %s, %s)'
                 val = (email, user, passwd)
                 mycursor.execute(sql, val)
                 db.commit()
             else: 
-                error(self, 'This email is already registered')
+                error(self, 'This email is already registered', 0)
                 return
         else:
-            error(self, 'Invalid email')
+            error(self, 'Invalid email', 0)
     else:
-        error(self, 'Something is wrong. Check your infos.')
+        error(self, 'Something is wrong. Check your infos.', 0)
 
 def login(self):
     email = self.lineEmail.text().strip()
@@ -51,13 +51,16 @@ def login(self):
             if (email,) in mycursor.fetchall():
                 mycursor.execute('SELECT passwd FROM users WHERE email = %s', (email,))
                 if (passwd,) == mycursor.fetchone():
-                    error(self, 'Access granted')
+                    error(self, 'Access granted', 1)
                 else: 
-                    error(self, 'Access denied')
+                    error(self, 'Access denied', 0)
             else:
-                error(self, 'This email is not registered')          
+                error(self, 'This email is not registered', 0)          
         else:
-            error(self, 'This email is not valid')      
+            error(self, 'This email is not valid', 0)      
 
-def error(self, message):
-    self.lbError.setText(message)
+def error(self, message, _type):
+    lb = self.lbError
+    color = ['red', 'green']
+    lb.setStyleSheet('color: {}'.format(color[_type]))
+    lb.setText(message)
